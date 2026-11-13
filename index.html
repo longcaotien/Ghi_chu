@@ -282,9 +282,25 @@ kbd{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px
 #tebar .ib[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
 #tebar .tesz{min-width:26px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600}
 #tebar .vr{height:18px;margin:0 2px}
-#tebox{position:relative;pointer-events:auto;display:inline-block}
-#tein{display:block;margin:0;padding:0;border:0;outline:1.5px dashed var(--accent);outline-offset:4px;border-radius:2px;background:rgba(255,255,255,.94);box-shadow:0 4px 18px rgba(74,63,209,.12);resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;font-family:"Patrick Hand","Be Vietnam Pro",sans-serif;min-width:72px}
-#tein:focus{outline-offset:4px}
+#tebox{position:relative;pointer-events:auto;display:inline-block;background:rgba(255,255,255,.94);outline:1.5px dashed var(--accent);outline-offset:4px;border-radius:2px;box-shadow:0 4px 18px rgba(74,63,209,.12)}
+#teview{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;margin:0;padding:0;border:0;box-sizing:border-box;font-family:"Patrick Hand","Be Vietnam Pro",sans-serif;font-variant-ligatures:none;user-select:none}
+#tein{position:relative;z-index:1;display:block;margin:0;padding:0;border:0;outline:none;border-radius:2px;background:transparent;color:transparent;caret-color:var(--te-c,#1d4ed8);resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;font-family:"Patrick Hand","Be Vietnam Pro",sans-serif;font-variant-ligatures:none;min-width:72px;box-sizing:border-box}
+#tein::selection{background:rgba(74,63,209,.22);color:transparent}
+#tein:focus{outline:none}
+.tpair{display:inline-flex;align-items:center;gap:4px;flex:none}
+.tpair[hidden],#tecolpop[hidden],#tePair[hidden]{display:none}
+.tp-c{width:26px;height:26px;border-radius:999px;border:2px solid var(--line);background:var(--surface2);padding:3px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s}
+.tp-c i{display:block;width:100%;height:100%;border-radius:999px;background:var(--c,#1d4ed8)}
+.tp-c[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 26%,transparent);transform:scale(1.06)}
+.tp-sw{height:26px;min-width:26px;padding:0 5px;font-size:13px;border-radius:7px;border:1px solid var(--line);background:var(--surface)}
+.tpair.te .tp-c{width:24px;height:24px;padding:2.5px}
+.tpair.te .tp-sw{height:24px;min-width:24px;padding:0 4px;font-size:12px}
+#tecolpop{position:absolute;z-index:5;pointer-events:auto;display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:6px 8px;white-space:nowrap}
+#tecolpop button.swb{width:22px;height:22px;border-radius:999px;border:2px solid transparent;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+#tecolpop button.swb[aria-pressed="true"]{border-color:var(--fg);transform:scale(1.12)}
+#tecolpop input[type="color"]{width:24px;height:24px;padding:0;border:1px solid var(--line);border-radius:999px;background:transparent;cursor:pointer}
+#tecolpop .vr{height:18px;margin:0 2px}
+#tecolpop .btn{height:24px;padding:0 8px;font-size:11.5px;border-radius:7px}
 #tegrip{position:absolute;top:-5px;right:-11px;width:12px;height:100%;padding:5px 0;cursor:ew-resize;display:flex;align-items:center;justify-content:center;touch-action:none}
 #tegrip::after{content:"";width:4px;height:min(28px,60%);border-radius:999px;background:var(--accent);opacity:.65;transition:opacity .15s,transform .15s}
 #tegrip:hover::after,#tegrip.drag::after{opacity:1;transform:scaleY(1.15)}
@@ -501,6 +517,12 @@ kbd{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px
 
   <div class="opts"><div class="in">
     <div class="sw" id="colors" role="group" aria-label="Màu"></div>
+    <div class="tpair" id="tpair" hidden role="group" aria-label="Hai màu chữ chuyển đổi">
+      <span class="cap">2 màu:</span>
+      <button class="tp-c" id="tpA" type="button" aria-pressed="true" aria-label="Màu chữ 1" title="Màu 1 (chạm để chuyển sang màu này, chọn màu trên bảng để đổi)"><i></i></button>
+      <button class="ib tp-sw" id="tpSwap" type="button" aria-label="Đảo 2 màu chữ" title="Chuyển đổi qua lại giữa 2 màu (Alt+C)">⇄</button>
+      <button class="tp-c" id="tpB" type="button" aria-pressed="false" aria-label="Màu chữ 2" title="Màu 2 (chạm để chuyển sang màu này, chọn màu trên bảng để đổi)"><i></i></button>
+    </div>
     <div class="vr" id="vr1"></div>
     <div class="wd" id="widths" role="group" aria-label="Độ dày"></div>
     <input type="range" id="wslider" min="1" max="24" step="0.5" value="2.5" aria-label="Độ dày nét"><span class="cap wv" id="wval">2.5</span>
@@ -521,7 +543,7 @@ kbd{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px
     <button class="ib tb" id="tBold" aria-pressed="false" title="Chữ đậm (Ctrl+B)" hidden><b>B</b></button>
     <button class="ib tb" id="tItalic" aria-pressed="false" title="Chữ nghiêng (Ctrl+I)" hidden><i>I</i></button>
     <div class="seg" id="tAlignSeg" hidden role="group" aria-label="Căn lề"><button data-a="left" aria-pressed="true" title="Căn trái">Trái</button><button data-a="center" aria-pressed="false" title="Căn giữa">Giữa</button><button data-a="right" aria-pressed="false" title="Căn phải">Phải</button></div>
-    <span class="cap" id="textHint" hidden>Bấm hoặc kéo chọn khung để gõ • Tự xuống dòng khi gặp lề • \alpha, -&gt;, x^2 • $…$ thành công thức</span>
+    <span class="cap" id="textHint" hidden>Bấm hoặc kéo chọn khung để gõ • Alt+C hoặc ⇄ đổi 2 màu trong 1 lần ghi • Bôi đen rồi chọn màu để tô riêng đoạn chữ</span>
     <span class="cap" id="toolHint" hidden></span>
   </div></div>
 
@@ -687,10 +709,20 @@ kbd{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px
       <button class="ib" id="teBold" type="button" aria-label="Chữ đậm" title="Chữ đậm (Ctrl+B)" aria-pressed="false"><b>B</b></button>
       <button class="ib" id="teItalic" type="button" aria-label="Chữ nghiêng" title="Chữ nghiêng (Ctrl+I)" aria-pressed="false"><i>I</i></button>
       <button class="ib" id="teAlign" type="button" aria-label="Căn lề" title="Đổi căn lề (Trái / Giữa / Phải)">≡</button>
+      <div class="vr" id="teColVr"></div>
+      <div class="tpair te" id="tePair" role="group" aria-label="Hai màu chữ chuyển đổi">
+        <button class="tp-c" id="teColA" type="button" aria-pressed="true" aria-label="Màu chữ 1" title="Màu chữ 1"><i></i></button>
+        <button class="ib tp-sw" id="teSwap" type="button" aria-label="Chuyển đổi 2 màu chữ" title="Chuyển đổi giữa 2 màu (Alt+C)">⇄</button>
+        <button class="tp-c" id="teColB" type="button" aria-pressed="false" aria-label="Màu chữ 2" title="Màu chữ 2"><i></i></button>
+        <button class="ib" id="teColMore" type="button" aria-label="Chọn màu chữ khác" title="Chọn màu cho ô đang dùng hoặc tô hết hộp" aria-expanded="false">▾</button>
+      </div>
+      <div class="vr"></div>
       <button class="ib" id="teFx" type="button" aria-label="Chuyển thành công thức" title="Chuyển thành công thức LaTeX">∑</button>
       <button class="btn pri" id="teOk" type="button" style="height:30px;padding:0 11px;border-radius:8px;font-size:13px">Xong</button>
     </div>
+    <div id="tecolpop" hidden role="dialog" aria-label="Chọn màu chữ"></div>
     <div id="tebox">
+      <div id="teview" aria-hidden="true"></div>
       <textarea id="tein" aria-label="Nội dung văn bản" spellcheck="false" wrap="soft" rows="1"></textarea>
       <div id="tegrip" title="Kéo để chỉnh chiều rộng khung chữ • Nhấp đúp để tự động hết lề"></div>
     </div>
@@ -805,7 +837,7 @@ const ICONS={
 const ic=(n,s=20)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
 
 /* ---------- state ---------- */
-const S={fwrap:true,fmw:714,name:'Bài của tôi',fh:null,fileName:'',dirty:false,lsOk:true,wDismiss:false,tsize:24,tfont:'hand',tbold:false,titalic:false,talign:'left',recog:false,delTpl:false,smooth:4,straight:false,fill:false,penSeen:false,selMode:'rect',ang:null,clip:null,clipPrefer:false,tool:'pen',color:'#1d4ed8',width:2.5,dash:false,snap:false,penOnly:false,eraseMode:'part',z:1,cur:0,sel:null,fsize:28,editing:null,pages:[],marks:[],showMarks:true,theme:'system',panel:false,tab:'f'};
+const S={fwrap:true,fmw:714,name:'Bài của tôi',fh:null,fileName:'',dirty:false,lsOk:true,wDismiss:false,tsize:24,tfont:'hand',tbold:false,titalic:false,talign:'left',tpair:['#1d4ed8','#c92a2a'],tslot:0,recog:false,delTpl:false,smooth:4,straight:false,fill:false,penSeen:false,selMode:'rect',ang:null,clip:null,clipPrefer:false,tool:'pen',color:'#1d4ed8',width:2.5,dash:false,snap:false,penOnly:false,eraseMode:'part',z:1,cur:0,sel:null,fsize:28,editing:null,pages:[],marks:[],showMarks:true,theme:'system',panel:false,tab:'f'};
 const R=new Map();           // pid -> {w,cv,ctx,vis,base,baseSig}
 const FC=new Map();          // formula cache
 let G=null, live=null;       // gesture, live preview
@@ -840,6 +872,8 @@ function load(){
       if(s.color)S.color=s.color;if(s.width)S.width=s.width;if(typeof s.smooth==='number')S.smooth=s.smooth;
       if(typeof s.tsize==='number')S.tsize=clamp(s.tsize,12,64);if(s.tfont&&['hand','sans','mono'].includes(s.tfont))S.tfont=s.tfont;
       if(typeof s.tbold==='boolean')S.tbold=s.tbold;if(typeof s.titalic==='boolean')S.titalic=s.titalic;if(s.talign&&['left','center','right'].includes(s.talign))S.talign=s.talign;
+      if(Array.isArray(s.tpair)&&s.tpair.length===2&&/^#[0-9a-f]{6}$/i.test(s.tpair[0])&&/^#[0-9a-f]{6}$/i.test(s.tpair[1]))S.tpair=[s.tpair[0],s.tpair[1]];
+      if(s.tslot===0||s.tslot===1)S.tslot=s.tslot;
       if(typeof s.showMarks==='boolean')S.showMarks=s.showMarks;}catch(e){}
 }
 let saveT=0,fileT=0;
@@ -847,7 +881,7 @@ function save(){clearTimeout(saveT);S.skipFile=false;S.dirty=true;updFileUI();up
   if(S.panel&&S.tab==='p')refreshThumbs();
   S.pend=true;saveT=setTimeout(()=>{S.pend=false;const ok=persist();
     S.lsOk=ok;if(S.skipFile){S.skipFile=false;S.dirty=false;}else if(S.fh){clearTimeout(fileT);fileT=setTimeout(()=>writeFile(true),700);}updFileUI();},400);}
-function saveSettings(){try{localStorage.setItem(SKEY,JSON.stringify({theme:S.theme,panel:S.panel,tab:S.tab,color:S.color,width:S.width,smooth:S.smooth,tsize:S.tsize,tfont:S.tfont,tbold:S.tbold,titalic:S.titalic,talign:S.talign,showMarks:S.showMarks}));}catch(e){}}
+function saveSettings(){try{localStorage.setItem(SKEY,JSON.stringify({theme:S.theme,panel:S.panel,tab:S.tab,color:S.color,width:S.width,smooth:S.smooth,tsize:S.tsize,tfont:S.tfont,tbold:S.tbold,titalic:S.titalic,talign:S.talign,tpair:S.tpair,tslot:S.tslot,showMarks:S.showMarks}));}catch(e){}}
 
 /* ---------- history ---------- */
 let hist=[],hi=-1;
@@ -1078,49 +1112,111 @@ const fontOf=o=>fontStr(o.size,o.font,o.bold,o.italic);
 function textWrapLim(x,mw){const room=Math.max(80,PW-RM-x);return mw>0?Math.max(80,Math.min(mw,room)):room;}
 const textLim=o=>textWrapLim(o.x,o.mw||0);
 const WLC=new Map();
-function wrapLines(text,font,lim){
+const isHex=c=>typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c);
+function normalizeRuns(text,rawRuns,fallbackCol){
+  const len=String(text||'').length,fb=isHex(fallbackCol)?fallbackCol:'#1d4ed8';
+  if(!len)return{c:fb,runs:null};
+  if(!Array.isArray(rawRuns)||!rawRuns.length)return{c:fb,runs:null};
+  const merged=[];let used=0;
+  for(const item of rawRuns){
+    if(used>=len)break;
+    if(!Array.isArray(item)||item.length<2)continue;
+    let n=Math.floor(Number(item[0]));if(!isFinite(n)||n<=0)continue;
+    if(used+n>len)n=len-used;
+    const col=isHex(item[1])?item[1]:fb;
+    if(merged.length&&merged[merged.length-1][1].toLowerCase()===col.toLowerCase())merged[merged.length-1][0]+=n;
+    else merged.push([n,col]);
+    used+=n;
+  }
+  if(used<len){
+    const rem=len-used;
+    if(merged.length&&merged[merged.length-1][1].toLowerCase()===fb.toLowerCase())merged[merged.length-1][0]+=rem;
+    else merged.push([rem,fb]);
+  }
+  if(merged.length<=1)return{c:merged.length?merged[0][1]:fb,runs:null};
+  return{c:merged[0][1],runs:merged};
+}
+function runsToCols(text,runs,fallbackCol){
+  const len=String(text||'').length,fb=isHex(fallbackCol)?fallbackCol:'#1d4ed8',out=new Array(len);
+  const norm=normalizeRuns(text,runs,fb);
+  if(!norm.runs){out.fill(norm.c);return out;}
+  let p=0;
+  for(const[n,col]of norm.runs){for(let k=0;k<n&&p<len;k++,p++)out[p]=col;}
+  while(p<len)out[p++]=fb;
+  return out;
+}
+function colsToRuns(cols,fallbackCol){
+  const fb=isHex(fallbackCol)?fallbackCol:'#1d4ed8';
+  if(!Array.isArray(cols)||!cols.length)return{c:fb,runs:null};
+  const out=[];
+  for(let i=0;i<cols.length;i++){
+    const col=isHex(cols[i])?cols[i]:fb;
+    if(out.length&&out[out.length-1][1].toLowerCase()===col.toLowerCase())out[out.length-1][0]++;
+    else out.push([1,col]);
+  }
+  if(out.length<=1)return{c:out.length?out[0][1]:fb,runs:null};
+  return{c:out[0][1],runs:out};
+}
+function sliceRunsForRange(text,runs,start,end,fallbackCol){
+  if(end<=start)return[];
+  const out=[];let cur=0;
+  for(const[n,col]of runs){
+    const r0=cur,r1=cur+n;cur=r1;
+    if(r1<=start)continue;
+    if(r0>=end)break;
+    const a=Math.max(start,r0),b=Math.min(end,r1);
+    if(b>a)out.push({text:text.slice(a,b),c:col});
+  }
+  if(!out.length)out.push({text:text.slice(start,end),c:fallbackCol});
+  return out;
+}
+function wrapLinesData(text,font,lim){
   lim=Math.max(40,lim);
-  const key=font+'|'+Math.round(lim*10)+'|'+text,hit=WLC.get(key);
+  const src=String(text),key=font+'|'+Math.round(lim*10)+'|'+src,hit=WLC.get(key);
   if(hit)return hit;
-  MEAS.font=font;const out=[];
-  for(const para of String(text).split('\n')){
-    if(!para||MEAS.measureText(para).width<=lim){out.push(para);continue;}
-    const toks=para.match(/\S+|\s+/g)||[''];
-    let line='',wrapped=false;
-    for(const tok of toks){
+  MEAS.font=font;const lines=[],spans=[];
+  let pos=0;const paras=src.split('\n');
+  for(let pi=0;pi<paras.length;pi++){
+    const para=paras[pi],pStart=pos;pos+=para.length+1;
+    if(!para||MEAS.measureText(para).width<=lim){lines.push(para);spans.push([pStart,pStart+para.length]);continue;}
+    const re=/\S+|\s+/g;let m,line='',lineStart=pStart,wrapped=false;
+    while((m=re.exec(para))){
+      const tok=m[0],tokStart=pStart+m.index;
       if(/^\s+$/.test(tok)){
-        if(line===''&&wrapped)continue;
-        line+=tok;
-        continue;
+        if(line===''&&wrapped){lineStart=tokStart+tok.length;continue;}
+        if(line==='')lineStart=tokStart;
+        line+=tok;continue;
       }
       const cand=line+tok;
       if(MEAS.measureText(cand).width<=lim){
+        if(line==='')lineStart=tokStart;
         line=cand;
       }else{
         const trimmed=line.replace(/\s+$/,'');
-        if(trimmed){out.push(trimmed);wrapped=true;}
+        if(trimmed){lines.push(trimmed);spans.push([lineStart,lineStart+trimmed.length]);wrapped=true;}
         line='';
         if(MEAS.measureText(tok).width<=lim){
-          line=tok;
+          line=tok;lineStart=tokStart;
         }else{
-          const chars=[...tok];let i=0;
+          const chars=[...tok];let i=0,cuOff=tokStart;
           while(i<chars.length){
             let lo=1,hi=chars.length-i;
             while(lo<hi){const mid=(lo+hi+1)>>1;if(MEAS.measureText(chars.slice(i,i+mid).join('')).width<=lim)lo=mid;else hi=mid-1;}
             const piece=chars.slice(i,i+Math.max(1,lo)).join('');
             i+=Math.max(1,lo);
-            if(i<chars.length){out.push(piece);wrapped=true;}
-            else line=piece;
+            if(i<chars.length){lines.push(piece);spans.push([cuOff,cuOff+piece.length]);wrapped=true;cuOff+=piece.length;}
+            else{line=piece;lineStart=cuOff;}
           }
         }
       }
     }
-    out.push(line.replace(/\s+$/,''));
+    const last=line.replace(/\s+$/,'');
+    lines.push(last);spans.push([lineStart,lineStart+last.length]);
   }
   if(WLC.size>600)WLC.clear();
-  WLC.set(key,out);
-  return out;
+  const res={lines,spans};WLC.set(key,res);return res;
 }
+function wrapLines(text,font,lim){return wrapLinesData(text,font,lim).lines;}
 const textLines=o=>wrapLines(o.text,fontOf(o),textLim(o));
 function textBoxSize(o){
   const L=textLines(o);MEAS.font=fontOf(o);let maxW=10;for(const l of L)maxW=Math.max(maxW,MEAS.measureText(l).width);
@@ -1129,9 +1225,33 @@ function textBoxSize(o){
 }
 function drawText(ctx,o){
   const{L,w}=textBoxSize(o),al=o.align||'left';
-  ctx.save();ctx.font=fontOf(o);ctx.fillStyle=o.c;ctx.textBaseline='top';ctx.textAlign=al;
-  const tx=al==='center'?o.x+w/2:al==='right'?o.x+w:o.x;
-  L.forEach((ln,i)=>ctx.fillText(ln,tx,o.y+i*o.size*1.3));ctx.restore();
+  ctx.save();ctx.font=fontOf(o);ctx.textBaseline='top';
+  if(!o.runs||!o.runs.length){
+    ctx.fillStyle=o.c;ctx.textAlign=al;
+    const tx=al==='center'?o.x+w/2:al==='right'?o.x+w:o.x;
+    L.forEach((ln,i)=>ctx.fillText(ln,tx,o.y+i*o.size*1.3));
+    ctx.restore();return;
+  }
+  const{spans}=wrapLinesData(o.text,fontOf(o),textLim(o));
+  for(let i=0;i<L.length;i++){
+    const ln=L[i];if(!ln)continue;
+    const sp=spans[i],segs=sliceRunsForRange(o.text,o.runs,sp[0],sp[1],o.c),y=o.y+i*o.size*1.3;
+    if(segs.length<=1){
+      ctx.fillStyle=segs.length?segs[0].c:o.c;ctx.textAlign=al;
+      const tx=al==='center'?o.x+w/2:al==='right'?o.x+w:o.x;
+      ctx.fillText(ln,tx,y);
+    }else{
+      const lineW=ctx.measureText(ln).width;
+      const x0=al==='center'?o.x+w/2-lineW/2:al==='right'?o.x+w-lineW:o.x;
+      ctx.textAlign='left';let drawn='';
+      for(const seg of segs){
+        const dx=drawn?ctx.measureText(drawn).width:0;
+        ctx.fillStyle=seg.c;ctx.fillText(seg.text,x0+dx,y);
+        drawn+=seg.text;
+      }
+    }
+  }
+  ctx.restore();
 }
 function drawObj(ctx,o){if(o.hid)return;
   switch(o.t){
@@ -1542,6 +1662,7 @@ function cloneObj(o){
   if(o.a)c.a=o.a.slice();
   if(o.b)c.b=o.b.slice();
   if(o.fns)c.fns=o.fns.slice();
+  if(o.runs)c.runs=o.runs.map(q=>q.slice());
   if(o.par)c.par={...o.par};
   if(o.mk)c.mk={...o.mk};
   return c;
@@ -1927,7 +2048,7 @@ function selectAll(){const p=curPage();if(!p.objs.length)return;const ids=p.objs
 function reorderSel(front){const p=S.sel&&pgOf(S.sel.pid);if(!p)return;const ids=new Set(selIds()),a=p.objs.filter(o=>ids.has(o.id)),b=p.objs.filter(o=>!ids.has(o.id));p.objs=front?b.concat(a):a.concat(b);commit();redrawPage(p.id);}
 function widthSel(noCommit){const os=selObjs();if(!os.length)return;let chg=false;os.forEach(o=>{if(o.t==='s'){const nw=o.k==='hl'?S.width*4.5:S.width;if(o.w!==nw){o.w=nw;chg=true;}}else if(typeof o.w==='number'&&o.t!=='g'&&o.t!=='img'&&o.w!==S.width){o.w=S.width;chg=true;}});if(chg){if(!noCommit)commit();redrawPage(S.sel.pid);syncDrawUI();}}
 function nudgeSel(dx,dy){const os=selObjs();if(!os.length)return;os.forEach(o=>xform(o,0,0,1,1,dx,dy));commit();redrawPage(S.sel.pid);}
-function recolorSel(noCommit){const os=selObjs();if(!os.length)return;let chg=false;os.forEach(o=>{if('c' in o&&o.c!==S.color){o.c=S.color;chg=true;}});if(chg){if(!noCommit)commit();redrawPage(S.sel.pid);syncDrawUI();}}
+function recolorSel(noCommit){const os=selObjs();if(!os.length)return;let chg=false;os.forEach(o=>{if('c' in o&&(o.c!==S.color||(o.runs&&o.runs.length))){o.c=S.color;if(o.runs)delete o.runs;chg=true;}});if(chg){if(!noCommit)commit();redrawPage(S.sel.pid);syncDrawUI();}}
 
 /* ---------- đánh dấu nội dung & mục lục nhảy nhanh ---------- */
 const BM_TAGS=[
@@ -2293,21 +2414,128 @@ function smartConv(t,fin){
   t=t.replace(new RegExp('\\\\([A-Za-z]+)'+lt,'g'),(m,w)=>WORDS[w]||m);
   return t;
 }
+function syncColsFromEdit(prev,prevCols,next,caret,activeCol,keepOld){
+  const pl=prev.length,nl=next.length;
+  let s=0;const maxTail=(typeof caret==='number'&&caret>=0&&caret<=nl)?nl-caret:Math.min(pl,nl);
+  while(s<maxTail&&s<pl&&prev[pl-1-s]===next[nl-1-s])s++;
+  const maxP=Math.min(pl-s,nl-s);let p=0;
+  while(p<maxP&&prev[p]===next[p])p++;
+  const ins=Math.max(0,nl-p-s);
+  const fillCol=keepOld&&p<prevCols.length?prevCols[p]:activeCol;
+  const mid=new Array(ins).fill(fillCol);
+  return prevCols.slice(0,p).concat(mid,prevCols.slice(pl-s));
+}
+function syncTECols(keepOld){
+  if(!TE)return;
+  const ta=$('#tein'),next=ta.value;
+  if(next!==TE.lastVal){
+    TE.cols=syncColsFromEdit(TE.lastVal,TE.cols,next,ta.selectionEnd,TE.c,keepOld);
+    TE.lastVal=next;
+  }
+  TE.lastCaret=ta.selectionStart===ta.selectionEnd?ta.selectionStart:-1;
+}
 function smartInput(ta){
+  syncTECols();
   const c=ta.selectionStart;if(c!==ta.selectionEnd)return;
   const pre=ta.value.slice(0,c),post=ta.value.slice(c),np=smartConv(pre,false);
-  if(np!==pre){ta.value=np+post;ta.selectionStart=ta.selectionEnd=np.length;}
+  if(np!==pre){
+    const next=np+post;
+    if(TE){TE.cols=syncColsFromEdit(ta.value,TE.cols,next,np.length,TE.c,true);TE.lastVal=next;TE.lastCaret=np.length;}
+    ta.value=next;ta.selectionStart=ta.selectionEnd=np.length;
+  }
 }
 function continueList(ta){
+  syncTECols();
   const c=ta.selectionStart;if(c!==ta.selectionEnd)return false;
   const v=ta.value,ls=v.lastIndexOf('\n',c-1)+1,line=v.slice(ls,c);
   let m=line.match(/^(\s*)(\d+)\.\s(.*)$/),mk=null;
-  if(m){if(!m[3].trim()){ta.value=v.slice(0,ls)+v.slice(c);ta.selectionStart=ta.selectionEnd=ls;return true;}mk='\n'+m[1]+(+m[2]+1)+'. ';}
-  else{m=line.match(/^(\s*)([-•])\s(.*)$/);if(m){if(!m[3].trim()){ta.value=v.slice(0,ls)+v.slice(c);ta.selectionStart=ta.selectionEnd=ls;return true;}mk='\n'+m[1]+m[2]+' ';}}
+  if(m){if(!m[3].trim()){ta.value=v.slice(0,ls)+v.slice(c);ta.selectionStart=ta.selectionEnd=ls;syncTECols();return true;}mk='\n'+m[1]+(+m[2]+1)+'. ';}
+  else{m=line.match(/^(\s*)([-•])\s(.*)$/);if(m){if(!m[3].trim()){ta.value=v.slice(0,ls)+v.slice(c);ta.selectionStart=ta.selectionEnd=ls;syncTECols();return true;}mk='\n'+m[1]+m[2]+' ';}}
   if(!mk)return false;
-  ta.value=v.slice(0,c)+mk+v.slice(c);ta.selectionStart=ta.selectionEnd=c+mk.length;return true;
+  ta.value=v.slice(0,c)+mk+v.slice(c);ta.selectionStart=ta.selectionEnd=c+mk.length;syncTECols();return true;
 }
 const selTextObjs=()=>S.tool==='select'&&S.sel?selObjs().filter(o=>o.t==='x'):[];
+function syncPairUI(){
+  const a=S.tpair[0],b=S.tpair[1],cur=TE&&!TE.pt?TE.c:S.tpair[S.tslot];
+  const sA=S.tslot===0&&cur.toLowerCase()===a.toLowerCase();
+  const sB=S.tslot===1&&cur.toLowerCase()===b.toLowerCase();
+  [['#tpA',a,sA],['#tpB',b,sB],['#teColA',a,sA],['#teColB',b,sB]].forEach(([sel,col,on])=>{
+    const el=$(sel);if(!el)return;
+    el.setAttribute('aria-pressed',String(on));
+    el.style.setProperty('--c',col);
+    const dot=el.querySelector('i');if(dot)dot.style.background=col;
+    el.title=(sel.endsWith('A')?'Màu chữ 1: ':'Màu chữ 2: ')+col;
+  });
+  const pop=$('#tecolpop');
+  if(pop&&!pop.hidden){
+    pop.querySelectorAll('button.swb').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.c.toLowerCase()===cur.toLowerCase())));
+    const pk=$('#tePick');if(pk&&isHex(cur))pk.value=cur;
+  }
+}
+function renderTEColors(){
+  const view=$('#teview'),ta=$('#tein');if(!view||!ta)return;
+  if(!TE){view.innerHTML='';return;}
+  syncTECols();
+  const val=ta.value;
+  ta.style.setProperty('--te-c',TE.c);
+  ta.style.caretColor=TE.c;
+  view.innerHTML='';
+  if(TE.pt){
+    const sp=document.createElement('span');sp.style.color=TE.c;sp.textContent=val||'';view.appendChild(sp);
+  }else if(val){
+    const{runs,c}=colsToRuns(TE.cols,TE.c);
+    if(!runs){
+      const sp=document.createElement('span');sp.style.color=c;sp.textContent=val;view.appendChild(sp);
+    }else{
+      let pos=0;
+      for(const[n,col]of runs){
+        const sp=document.createElement('span');sp.style.color=col;sp.textContent=val.slice(pos,pos+n);
+        view.appendChild(sp);pos+=n;
+      }
+    }
+  }
+  if(!val||val.endsWith('\n')){const zw=document.createElement('span');zw.textContent='\u200b';zw.style.color='transparent';view.appendChild(zw);}
+}
+function applyTEColor(col,targetSlot,fillAll){
+  if(!isHex(col))return;
+  if(!TE||TE.pt){
+    if(targetSlot===0||targetSlot===1){S.tslot=targetSlot;S.tpair[targetSlot]=col;}
+    else if(col.toLowerCase()===S.tpair[1-S.tslot].toLowerCase())S.tslot=1-S.tslot;
+    else S.tpair[S.tslot]=col;
+    S.color=col;updCursor();syncDrawUI();syncPairUI();saveSettings();
+    return;
+  }
+  syncTECols();
+  const ta=$('#tein');
+  const sel=TE.savedSel&&TE.savedSel.e>TE.savedSel.s?TE.savedSel:{s:ta.selectionStart,e:ta.selectionEnd};
+  if(targetSlot===0||targetSlot===1){S.tslot=targetSlot;S.tpair[targetSlot]=col;}
+  else if(col.toLowerCase()===S.tpair[1-S.tslot].toLowerCase())S.tslot=1-S.tslot;
+  else S.tpair[S.tslot]=col;
+  TE.c=col;S.color=col;
+  if(fillAll)TE.cols.fill(col);
+  else if(sel.e>sel.s){for(let i=sel.s;i<sel.e&&i<TE.cols.length;i++)TE.cols[i]=col;}
+  renderTEColors();syncDrawUI();syncPairUI();placeTE();updCursor();saveSettings();
+}
+function swapTEPair(){
+  const nx=1-S.tslot,col=S.tpair[nx];
+  applyTEColor(col,nx);
+}
+function syncCaretColor(){
+  if(!TE||TE.pt)return;
+  const ta=$('#tein');
+  if(ta.selectionStart!==ta.selectionEnd){TE.lastCaret=-1;return;}
+  const pos=ta.selectionStart;
+  if(pos===TE.lastCaret)return;
+  TE.lastCaret=pos;
+  if(!TE.cols.length)return;
+  const col=TE.cols[pos>0?pos-1:0];
+  if(isHex(col)&&col.toLowerCase()!==TE.c.toLowerCase()){
+    TE.c=col;S.color=col;
+    if(col.toLowerCase()===S.tpair[0].toLowerCase())S.tslot=0;
+    else if(col.toLowerCase()===S.tpair[1].toLowerCase())S.tslot=1;
+    renderTEColors();syncDrawUI();syncPairUI();updCursor();
+  }
+}
 function syncTextUI(){
   const xos=selTextObjs(),ref=TE&&!TE.pt?TE:(xos.length?xos[0]:null);
   const sz=ref?Math.round(ref.size):S.tsize;
@@ -2325,6 +2553,7 @@ function syncTextUI(){
   teF.title='Kiểu chữ: '+(fn==='hand'?'Viết tay':fn==='sans'?'Chữ in':'Mã')+' (bấm để đổi)';
   const teA=$('#teAlign');teA.innerHTML=ic('al_'+al,16);
   teA.title='Căn lề: '+(al==='left'?'Trái':al==='center'?'Giữa':'Phải')+' (bấm để đổi)';
+  syncPairUI();
 }
 function applyTextSel(fn,noCommit){
   const xos=selTextObjs();if(!xos.length)return false;
@@ -2369,10 +2598,10 @@ function setTAlign(a){
 }
 function placeTE(){
   if(!TE)return;const r=R.get(TE.pid);if(!r)return;
-  const b=r.cv.getBoundingClientRect(),ta=$('#tein'),bar=$('#tebar'),z=S.z,sz=TE.size*z;
-  const fontPx=fontStr(sz,TE.font,TE.bold,TE.italic);
-  ta.style.font=fontPx;ta.style.lineHeight=(TE.size*1.3*z)+'px';ta.style.color=TE.c;
-  ta.style.textAlign=TE.pt?'left':(TE.align||'left');
+  const b=r.cv.getBoundingClientRect(),ta=$('#tein'),view=$('#teview'),bar=$('#tebar'),pop=$('#tecolpop'),z=S.z,sz=TE.size*z;
+  const fontPx=fontStr(sz,TE.font,TE.bold,TE.italic),lh=(TE.size*1.3*z)+'px',al=TE.pt?'left':(TE.align||'left');
+  ta.style.font=fontPx;ta.style.lineHeight=lh;ta.style.textAlign=al;
+  if(view){view.style.font=fontPx;view.style.lineHeight=lh;view.style.textAlign=al;}
   const lim=(TE.pt?Math.max(80,PW-RM-TE.x):textWrapLim(TE.x,TE.mw))*z;
   const L=ta.value.split('\n'),WL=wrapLines(ta.value,fontPx,lim);
   MEAS.font=fontPx;let w=72;for(const l of WL)w=Math.max(w,MEAS.measureText(l).width+4);
@@ -2381,14 +2610,23 @@ function placeTE(){
   ta.style.width=boxW+'px';
   ta.style.height='0px';
   const minH=Math.ceil(WL.length*TE.size*1.3*z);
-  ta.style.height=Math.max(minH,ta.scrollHeight)+'px';
+  const boxH=Math.max(minH,ta.scrollHeight)+'px';
+  ta.style.height=boxH;
+  if(view){view.style.width=boxW+'px';view.style.height=boxH;}
   const wrap=$('#tewrap'),left=b.left+TE.x*z,top=b.top+TE.y*z;
   wrap.style.left=left+'px';wrap.style.top=top+'px';
-  const dr=desk.getBoundingClientRect(),barH=bar.offsetHeight||38,barW=bar.offsetWidth||280;
+  const dr=desk.getBoundingClientRect(),barH=bar.offsetHeight||38,barW=bar.offsetWidth||340;
   const above=top-dr.top>=barH+10;
-  bar.style.top=above?-(barH+8)+'px':(parseFloat(ta.style.height)+10)+'px';
+  const barTop=above?-(barH+8):(parseFloat(boxH)+10);
+  bar.style.top=barTop+'px';
   const maxShift=window.innerWidth-8-left-barW,minShift=8-left;
-  bar.style.left=clamp(0,minShift,Math.max(minShift,maxShift))+'px';
+  const barLeft=clamp(0,minShift,Math.max(minShift,maxShift));
+  bar.style.left=barLeft+'px';
+  if(pop&&!pop.hidden){
+    const popW=pop.offsetWidth||230,popH=pop.offsetHeight||38;
+    pop.style.left=clamp(barLeft,minShift,Math.max(minShift,window.innerWidth-8-left-popW))+'px';
+    pop.style.top=(above?barTop-popH-6:barTop+barH+6)+'px';
+  }
 }
 function ensureTEVisible(){
   if(!TE)return;
@@ -2408,16 +2646,37 @@ function openText(e,pid,x,y,obj,mw,exactY){
   const tx=pt?obj.x+7:(obj?obj.x:clamp(x,12,PW-RM-100));
   const ty=pt?obj.y-26:(obj?obj.y:clamp(exactY?y:y-size*.65,8,PH-size*1.4));
   const tmw=pt?0:(obj?(obj.mw||0):(mw||0));
-  TE={pid,id:obj?obj.id:null,o:obj||null,pt,size,font,bold,italic,align,mw:tmw,c:obj?obj.c:S.color,x:tx,y:ty};
+  const val=obj?(pt?obj.label:obj.text):'';
+  let cols=obj?runsToCols(val,pt?null:obj.runs,obj.c):[];
+  let initC=obj?obj.c:S.tpair[S.tslot];
+  if(obj&&!pt){
+    const uniq=[];
+    for(const q of cols){const lc=q.toLowerCase();if(!uniq.some(u=>u.toLowerCase()===lc))uniq.push(q);if(uniq.length>=2)break;}
+    if(uniq.length>=2){
+      S.tpair=[uniq[0],uniq[1]];
+      const lastC=cols[cols.length-1];
+      initC=lastC;
+      S.tslot=lastC.toLowerCase()===S.tpair[1].toLowerCase()?1:0;
+    }else if(isHex(obj.c)){
+      initC=obj.c;
+      if(initC.toLowerCase()===S.tpair[1].toLowerCase())S.tslot=1;
+      else{S.tpair[0]=initC;S.tslot=0;}
+    }
+  }
+  S.color=initC;
+  TE={pid,id:obj?obj.id:null,o:obj||null,pt,size,font,bold,italic,align,mw:tmw,c:initC,x:tx,y:ty,cols,lastVal:val,lastCaret:val.length,savedSel:null};
   if(obj){obj.hid=true;redrawPage(pid);}
-  const ta=$('#tein');ta.value=obj?(pt?obj.label:obj.text):'';
+  const ta=$('#tein');ta.value=val;
   $('#tewrap').hidden=false;$('#tegrip').hidden=pt;
+  $('#teColVr').hidden=$('#tePair').hidden=pt;
+  const pop=$('#tecolpop');if(pop)pop.hidden=true;
+  const cm=$('#teColMore');if(cm)cm.setAttribute('aria-expanded','false');
   $('#teDn').disabled=$('#teUp').disabled=$('#teFx').disabled=$('#teFont').disabled=$('#teBold').disabled=$('#teItalic').disabled=$('#teAlign').disabled=pt;
-  syncTextUI();placeTE();if(!pt)draw(pgOf(pid));
-  ta.focus({preventScroll:true});ta.setSelectionRange(ta.value.length,ta.value.length);
+  syncTextUI();syncDrawUI();renderTEColors();placeTE();if(!pt)draw(pgOf(pid));
+  ta.focus({preventScroll:true});ta.setSelectionRange(val.length,val.length);
   ensureTEVisible();
 }
-function closeText(){const pid=TE&&TE.pid;if(TE&&TE.o)delete TE.o.hid;TE=null;$('#tewrap').hidden=true;if(pid)draw(pgOf(pid));}
+function closeText(){const pid=TE&&TE.pid;if(TE&&TE.o)delete TE.o.hid;TE=null;$('#tewrap').hidden=true;const p=$('#tecolpop');if(p)p.hidden=true;if(pid)draw(pgOf(pid));}
 function mixToTex(v){
   const re=/\$(?=\S)([^$\n]*?\S)\$/g;
   return v.split('\n').map(ln=>{
@@ -2428,10 +2687,22 @@ function mixToTex(v){
   }).join(' \\\\ ');
 }
 function wrapBox(x,pref){const mw=pref>0?clamp(pref,160,PMW):clamp(PW-RM-x,160,PMW);return{mw,x:Math.min(x,PW-RM-mw)};}
+const runsEqual=(a,b)=>{
+  if(!a&&!b)return true;
+  if(!a||!b||a.length!==b.length)return false;
+  for(let i=0;i<a.length;i++)if(a[i][0]!==b[i][0]||a[i][1].toLowerCase()!==b[i][1].toLowerCase())return false;
+  return true;
+};
 function confirmText(){
-  if(!TE)return;const t=TE,p=pgOf(t.pid),o=t.o&&p?p.objs.find(q=>q.id===t.id):null;
-  const v=smartConv($('#tein').value,true).replace(/\s+$/,'');
-  if(o)delete o.hid;TE=null;$('#tewrap').hidden=true;
+  if(!TE)return;
+  syncTECols();
+  const t=TE,p=pgOf(t.pid),o=t.o&&p?p.objs.find(q=>q.id===t.id):null;
+  const raw=$('#tein').value,conv=smartConv(raw,true);
+  let cols=conv===raw?t.cols.slice():syncColsFromEdit(raw,t.cols,conv,conv.length,t.c,true);
+  const v=conv.replace(/\s+$/,'');
+  cols=cols.slice(0,v.length);
+  const norm=colsToRuns(cols,t.c);
+  if(o)delete o.hid;TE=null;$('#tewrap').hidden=true;const pop=$('#tecolpop');if(pop)pop.hidden=true;
   if(!p){redrawAll();return;}
   if(v){
     let fm=t.pt?null:v.match(/^\$([^$\n]+)\$$/);
@@ -2439,12 +2710,13 @@ function confirmText(){
     const mwSave=t.mw>0?Math.round(t.mw):(t.align&&t.align!=='left'?Math.round(textWrapLim(t.x,0)):0);
     if(t.pt&&o){o.label=v.split('\n')[0];commit();}
     else if(fm){
-      const wb=wrapBox(Math.round(t.x),mwSave),f={id:o?o.id:uid(),t:'f',latex:fm[1].trim(),c:t.c,size:Math.round(t.size*1.15),mw:wb.mw,x:Math.round(wb.x),y:Math.round(t.y)};
+      const wb=wrapBox(Math.round(t.x),mwSave),f={id:o?o.id:uid(),t:'f',latex:fm[1].trim(),c:norm.c,size:Math.round(t.size*1.15),mw:wb.mw,x:Math.round(wb.x),y:Math.round(t.y)};
       if(o)p.objs[p.objs.indexOf(o)]=f;else p.objs.push(f);commit();ensureFormula(f);
     }
     else if(o){
-      const chg=o.text!==v||o.size!==t.size||Math.round(o.x)!==Math.round(t.x)||Math.round(o.y)!==Math.round(t.y)||(o.mw||0)!==mwSave||(o.font||'hand')!==t.font||!!o.bold!==!!t.bold||!!o.italic!==!!t.italic||(o.align||'left')!==t.align;
-      o.text=v;o.size=t.size;o.x=Math.round(t.x);o.y=Math.round(t.y);
+      const chg=o.text!==v||o.c!==norm.c||!runsEqual(o.runs,norm.runs)||o.size!==t.size||Math.round(o.x)!==Math.round(t.x)||Math.round(o.y)!==Math.round(t.y)||(o.mw||0)!==mwSave||(o.font||'hand')!==t.font||!!o.bold!==!!t.bold||!!o.italic!==!!t.italic||(o.align||'left')!==t.align;
+      o.text=v;o.c=norm.c;if(norm.runs)o.runs=norm.runs;else delete o.runs;
+      o.size=t.size;o.x=Math.round(t.x);o.y=Math.round(t.y);
       if(mwSave>0)o.mw=mwSave;else delete o.mw;
       if(t.font&&t.font!=='hand')o.font=t.font;else delete o.font;
       if(t.bold)o.bold=true;else delete o.bold;
@@ -2453,7 +2725,8 @@ function confirmText(){
       if(chg)commit();
     }
     else{
-      const nx={id:uid(),t:'x',text:v,c:t.c,size:t.size,x:Math.round(t.x),y:Math.round(t.y)};
+      const nx={id:uid(),t:'x',text:v,c:norm.c,size:t.size,x:Math.round(t.x),y:Math.round(t.y)};
+      if(norm.runs)nx.runs=norm.runs;
       if(mwSave>0)nx.mw=mwSave;
       if(t.font&&t.font!=='hand')nx.font=t.font;
       if(t.bold)nx.bold=true;
@@ -2465,16 +2738,55 @@ function confirmText(){
   redrawPage(t.pid);
 }
 function initTE(){
-  const ta=$('#tein'),bar=$('#tebar'),grip=$('#tegrip');
+  const ta=$('#tein'),bar=$('#tebar'),grip=$('#tegrip'),pop=$('#tecolpop');
   const refocus=()=>{if(TE)ta.focus({preventScroll:true});};
-  ta.addEventListener('input',e=>{if(!e.isComposing)smartInput(ta);placeTE();ensureTEVisible();if(TE&&!TE.pt)draw(pgOf(TE.pid));});
-  ta.addEventListener('compositionend',()=>{smartInput(ta);placeTE();ensureTEVisible();});
+  const closePop=()=>{if(pop&&!pop.hidden){pop.hidden=true;$('#teColMore').setAttribute('aria-expanded','false');}};
+  const buildPop=()=>{
+    pop.innerHTML='';
+    COLORS.forEach(col=>{
+      const b=document.createElement('button');b.type='button';b.className='swb';b.style.background=col;b.dataset.c=col;
+      b.setAttribute('aria-label','Chọn màu '+col);b.title='Chọn màu '+col;
+      b.onpointerdown=e=>e.preventDefault();
+      b.onclick=()=>{applyTEColor(col);closePop();refocus();};
+      pop.appendChild(b);
+    });
+    const pk=document.createElement('input');pk.type='color';pk.id='tePick';pk.setAttribute('aria-label','Màu tùy chỉnh');pk.title='Chọn màu tùy chỉnh';
+    pk.onpointerdown=()=>{if(TE)TE.savedSel={s:ta.selectionStart,e:ta.selectionEnd};};
+    pk.oninput=()=>{applyTEColor(pk.value);};
+    pk.onchange=()=>{if(TE){applyTEColor(pk.value);TE.savedSel=null;}closePop();refocus();};
+    pop.appendChild(pk);
+    const vr=document.createElement('span');vr.className='vr';pop.appendChild(vr);
+    const allB=document.createElement('button');allB.type='button';allB.className='btn';allB.textContent='Tô cả hộp';
+    allB.title='Đổi toàn bộ chữ trong hộp này sang màu đang chọn';
+    allB.onpointerdown=e=>e.preventDefault();
+    allB.onclick=()=>{if(TE)applyTEColor(TE.c,undefined,true);closePop();refocus();};
+    pop.appendChild(allB);
+  };
+  buildPop();
+  ta.addEventListener('input',e=>{if(!e.isComposing)smartInput(ta);else syncTECols();renderTEColors();placeTE();ensureTEVisible();if(TE&&!TE.pt)draw(pgOf(TE.pid));});
+  ta.addEventListener('compositionend',()=>{smartInput(ta);renderTEColors();placeTE();ensureTEVisible();});
+  ta.addEventListener('pointerup',syncCaretColor);
+  ta.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key))syncCaretColor();});
   ta.addEventListener('keydown',e=>{
+    if(e.altKey&&!e.ctrlKey&&!e.metaKey){
+      const lk=e.key.toLowerCase();
+      if(lk==='c'&&TE&&!TE.pt){e.preventDefault();e.stopPropagation();swapTEPair();return;}
+      if(/^[1-6]$/.test(e.key)&&TE&&!TE.pt){e.preventDefault();e.stopPropagation();applyTEColor(COLORS[+e.key-1]);return;}
+    }
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='b'&&TE&&!TE.pt){e.preventDefault();toggleTBold();return;}
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='i'&&TE&&!TE.pt){e.preventDefault();toggleTItalic();return;}
     if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();confirmText();return;}
-    if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&continueList(ta)){e.preventDefault();placeTE();ensureTEVisible();}
+    if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&continueList(ta)){e.preventDefault();renderTEColors();placeTE();ensureTEVisible();}
   });
+  bar.querySelectorAll('button').forEach(b=>b.addEventListener('pointerdown',e=>e.preventDefault()));
+  ['#tpA','#tpSwap','#tpB'].forEach(sel=>{const el=$(sel);if(el)el.addEventListener('pointerdown',e=>{if(TE)e.preventDefault();});});
+  $('#tpA').onclick=()=>{applyTEColor(S.tpair[0],0);refocus();};
+  $('#tpB').onclick=()=>{applyTEColor(S.tpair[1],1);refocus();};
+  $('#tpSwap').onclick=()=>{swapTEPair();refocus();};
+  $('#teColA').onclick=()=>{applyTEColor(S.tpair[0],0);closePop();refocus();};
+  $('#teColB').onclick=()=>{applyTEColor(S.tpair[1],1);closePop();refocus();};
+  $('#teSwap').onclick=()=>{swapTEPair();closePop();refocus();};
+  $('#teColMore').onclick=()=>{if(!TE||TE.pt)return;pop.hidden=!pop.hidden;$('#teColMore').setAttribute('aria-expanded',String(!pop.hidden));syncPairUI();placeTE();};
   $('#teOk').onclick=confirmText;
   $('#teDn').onclick=()=>{setTSize(clamp((TE?TE.size:S.tsize)-2,12,64));refocus();};
   $('#teUp').onclick=()=>{setTSize(clamp((TE?TE.size:S.tsize)+2,12,64));refocus();};
@@ -2518,6 +2830,7 @@ function initTE(){
   });
   const endBar=e=>{if(td&&td.k==='bar'&&td.id===e.pointerId){td=null;refocus();}};
   bar.addEventListener('pointerup',endBar);bar.addEventListener('pointercancel',endBar);
+  document.addEventListener('pointerdown',e=>{if(!pop.hidden&&!e.target.closest('#tecolpop,#teColMore'))closePop();},true);
   desk.addEventListener('scroll',placeTE,{passive:true});window.addEventListener('resize',placeTE);
 }
 
@@ -2539,9 +2852,9 @@ const TOOL_HINTS={
 };
 function syncDrawUI(){
   const co=selColorObjs(),wo=selWidthObjs();
-  const col=co.length?co[0].c:S.color;
+  const col=TE&&!TE.pt?TE.c:(co.length?co[0].c:S.color);
   const w=wo.length?(wo[0].t==='s'&&wo[0].k==='hl'?Math.round(wo[0].w/4.5*2)/2:wo[0].w):S.width;
-  $$('#colors button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.c===col)));
+  $$('#colors button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.c.toLowerCase()===String(col).toLowerCase())));
   const cp=$('#cpick');if(cp&&/^#[0-9a-f]{6}$/i.test(col))cp.value=col;
   const sl=$('#wslider');if(sl){sl.value=w;$('#wval').textContent=w;}
   $$('#widths button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.w===w)));
@@ -2555,7 +2868,7 @@ function syncOpts(){
   const showFill=isSel?sFill.length>0:['rect','ell','tri','circ'].includes(t);
   const showSnap=t==='select'||t==='text'||t==='pt'||t==='ang'||['line','arrow','rect','ell','circ','tri','axes','dim'].includes(t);
   const showPen=isInk||t==='eraser'||['line','arrow','rect','ell','circ','tri','axes','pt','dim','ang'].includes(t);
-  $('#colors').hidden=!showCol;$('#vr1').hidden=!showCol||!showWid;
+  $('#colors').hidden=!showCol;$('#tpair').hidden=!(t==='text'||(TE&&!TE.pt));$('#vr1').hidden=!showCol||!showWid;
   $('#widths').hidden=!showWid;$('#wslider').hidden=!showWid;$('#wval').hidden=!showWid;$('#vr2').hidden=!showWid;
   $('#tDash').hidden=!showDash;$('#tFill').hidden=!showFill;$('#tSnap').hidden=!showSnap;
   $('#tDash').setAttribute('aria-pressed',String(isSel&&sDash.length?!!sDash[0].d:S.dash));
@@ -2572,6 +2885,7 @@ function syncOpts(){
 }
 function setTool(t){if(t==='plot'||t==='calc'){openPanel(t==='plot'?'g':'c');return;}
   S.tool=t;desk.dataset.tool=t;
+  if(t==='text')S.color=S.tpair[S.tslot];
   $$('#rail .t').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===t)));
   S.ang=null;if(t==='ang')toast('Chạm đỉnh góc, rồi chạm hai điểm cuối của hai cạnh.');
   if(t==='fx'){openPanel('f');setTimeout(()=>$('#latex').focus(),0);}
@@ -2589,16 +2903,27 @@ function buildRail(){
 }
 function buildOpts(){
   const c=$('#colors');c.innerHTML='';
-  COLORS.forEach(col=>{const b=document.createElement('button');b.style.background=col;b.setAttribute('aria-label','Màu '+col);b.dataset.c=col;b.onclick=()=>setColor(col);c.appendChild(b);});
+  COLORS.forEach(col=>{const b=document.createElement('button');b.style.background=col;b.setAttribute('aria-label','Màu '+col);b.dataset.c=col;b.onpointerdown=e=>{if(TE)e.preventDefault();};b.onclick=()=>{setColor(col);if(TE)$('#tein').focus({preventScroll:true});};c.appendChild(b);});
   const inp=document.createElement('input');inp.type='color';inp.id='cpick';inp.setAttribute('aria-label','Chọn màu khác');inp.value=S.color;
+  inp.onpointerdown=()=>{if(TE){const ta=$('#tein');TE.savedSel={s:ta.selectionStart,e:ta.selectionEnd};}};
   inp.oninput=()=>setColor(inp.value,false,true);
-  inp.onchange=()=>{if(!TE&&S.tool==='select'&&S.sel&&snap()!==hist[hi])commit();saveSettings();};
+  inp.onchange=()=>{if(TE){setColor(inp.value,false,false);TE.savedSel=null;$('#tein').focus({preventScroll:true});}else{if(S.tool==='select'&&S.sel&&snap()!==hist[hi])commit();saveSettings();}};
   c.appendChild(inp);
   const w=$('#widths');w.innerHTML='';
   WIDTHS.forEach(v=>{const b=document.createElement('button');b.dataset.w=v;b.setAttribute('aria-label','Nét dày '+v);b.innerHTML=`<i style="width:${6+v*1.6}px;height:${6+v*1.6}px"></i>`;b.onclick=()=>setWidth(v);w.appendChild(b);});
   setColor(S.color,true);setWidth(S.width,true);
 }
-function setColor(c,quiet,noCommit){S.color=c;updCursor();$$('#colors button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.c===c)));const i=$('#cpick');if(i&&/^#[0-9a-f]{6}$/i.test(c))i.value=c;if(TE){TE.c=c;placeTE();}else if(!quiet&&S.tool==='select'&&S.sel)recolorSel(noCommit);if(!quiet&&!noCommit)saveSettings();}
+function setColor(c,quiet,noCommit){
+  if(!quiet&&TE){
+    if(TE.pt){TE.c=c;S.color=c;updCursor();syncDrawUI();renderTEColors();placeTE();}
+    else applyTEColor(c);
+    return;
+  }
+  if(!quiet&&S.tool==='text'){applyTEColor(c);return;}
+  S.color=c;updCursor();syncDrawUI();
+  if(!quiet&&S.tool==='select'&&S.sel)recolorSel(noCommit);
+  if(!quiet&&!noCommit)saveSettings();
+}
 function setWidth(v,quiet,noCommit){S.width=v;const sl=$('#wslider');if(sl){sl.value=v;$('#wval').textContent=v;}updCursor();$$('#widths button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.w===v)));if(!quiet&&!TE&&S.tool==='select'&&S.sel)widthSel(noCommit);if(!quiet&&!noCommit)saveSettings();}
 function toggle(id,key){
   const b=$(id);
@@ -2832,10 +3157,10 @@ function backup(){
   w.innerHTML='<div class="cap">Sao chép đoạn mã này để lưu bài. Muốn mở lại, dán vào ô rồi bấm Khôi phục.</div><textarea id="bk" spellcheck="false"></textarea><div class="row2"><button class="btn" id="bkCopy">Sao chép</button><button class="btn pri" id="bkLoad">Khôi phục từ ô này</button></div><div class="msg" id="bkMsg"></div>';
   modal('Sao lưu và khôi phục',w);const ta=$('#bk');ta.value=json;
   $('#bkCopy').onclick=()=>{ta.select();(navigator.clipboard?navigator.clipboard.writeText(ta.value):Promise.reject()).then(()=>toast('Đã sao chép'),()=>{document.execCommand&&document.execCommand('copy');toast('Đã chọn văn bản, nhấn Ctrl+C');});};
-  $('#bkLoad').onclick=()=>{try{const d=JSON.parse(ta.value);if(!d||!Array.isArray(d.pages)||!d.pages.length)throw 0;S.pages=d.pages;S.marks=cleanMarks(d.marks,S.pages);if(typeof d.name==='string'&&d.name.trim()){S.name=d.name.trim().slice(0,60);updName();}S.cur=0;S.sel=null;commit();syncDom();updSel();closeModal();toast('Đã khôi phục');}catch(e){$('#bkMsg').textContent='Mã không hợp lệ, hãy kiểm tra lại.';$('#bkMsg').className='msg bad';}};
+  $('#bkLoad').onclick=()=>{try{const d=JSON.parse(ta.value);if(!d||!Array.isArray(d.pages)||!d.pages.length)throw 0;d.pages.forEach(pg=>{(pg&&Array.isArray(pg.objs)?pg.objs:[]).forEach(o=>{if(o&&o.t==='x'&&o.runs){const nr=normalizeRuns(o.text,o.runs,o.c);o.c=nr.c;if(nr.runs)o.runs=nr.runs;else delete o.runs;}});});S.pages=d.pages;S.marks=cleanMarks(d.marks,S.pages);if(typeof d.name==='string'&&d.name.trim()){S.name=d.name.trim().slice(0,60);updName();}S.cur=0;S.sel=null;commit();syncDom();updSel();closeModal();toast('Đã khôi phục');}catch(e){$('#bkMsg').textContent='Mã không hợp lệ, hãy kiểm tra lại.';$('#bkMsg').className='msg bad';}};
 }
 function keys(){
-  closeMenu();const rows=[['P','Bút'],['H','Bút dạ quang'],['E','Tẩy'],['V','Chọn'],['G','Kéo trang'],['T','Văn bản (bấm hoặc kéo tạo khung chữ)'],['B','Đánh dấu phần nội dung'],['Alt + B','Mở / đóng bảng Đánh dấu & Mục lục'],['Alt + M','Đánh dấu nhanh vị trí đang xem / đối tượng đang chọn'],['Alt + [ / ]','Nhảy tới đánh dấu trước / sau'],['L','Đoạn thẳng'],['A','Mũi tên'],['R','Hình chữ nhật'],['O','Hình elip'],['I','Tam giác'],['X','Hệ trục'],['F','Công thức LaTeX'],['Ctrl + S','Lưu bài ra file'],['Shift + kéo góc','Đổi cỡ chữ (mặc định kéo góc đổi độ rộng công thức)'],['Kéo cạnh phải chữ / công thức','Chỉnh chiều rộng tự xuống dòng (nhấp đúp cạnh phải khi gõ để hết lề)'],['Ctrl + B / Ctrl + I (khi gõ chữ)','Bật / tắt chữ đậm, chữ nghiêng'],['Ctrl + O','Mở file bài đã lưu'],['Ctrl + Z','Hoàn tác'],['Ctrl + Shift + Z','Làm lại'],['Ctrl + D','Nhân đôi'],['Delete','Xóa đối tượng đang chọn'],['+ / −','Phóng to, thu nhỏ'],['Giữ Shift','Vẽ thẳng 45°, hình đều, hoặc chọn thêm đối tượng'],['Ctrl + Enter','Chèn văn bản hoặc công thức'],['[ và ]','Giảm, tăng độ dày nét'],['1 đến 6','Chọn màu nhanh'],['0','Vừa chiều rộng màn hình'],['C','Đường tròn tâm và bán kính'],['N','Điểm có nhãn A, B, C'],['Ctrl + V','Dán ảnh, văn bản hoặc đối tượng vào trang'],['Kéo khung trống','Chọn nhiều đối tượng (công cụ Chọn)'],['Nhấp đúp','Sửa công thức, chữ, nhãn điểm'],['Esc','Đóng bảng, hộp thoại, bỏ chọn'],['M','Đo độ dài'],['K','Đo góc'],['Ctrl + C, X, V','Sao chép, cắt, dán đối tượng'],['Ctrl + A','Chọn tất cả trên trang'],['Ctrl + K','Tìm lệnh, công cụ, công thức, đánh dấu'],['\\alpha, ->, x^2 (khi gõ chữ)','Tự đổi thành α, →, x²'],['$...$','Văn bản bao bằng $ thành công thức'],['1. rồi Enter','Tự tiếp danh sách đánh số hoặc gạch đầu dòng'],['D','Mở bảng đồ thị'],['Q','Mở máy tính và giải phương trình'],['Tab (khi gõ LaTeX)','Nhảy tới cặp ngoặc {} kế tiếp'],['Phím mũi tên','Dịch đối tượng đang chọn (Shift: 10 px)']];
+  closeMenu();const rows=[['P','Bút'],['H','Bút dạ quang'],['E','Tẩy'],['V','Chọn'],['G','Kéo trang'],['T','Văn bản (bấm hoặc kéo tạo khung chữ)'],['Alt + C','Đổi qua lại 2 màu chữ trong 1 lần ghi'],['Alt + 1..6','Đổi nhanh màu chữ khi đang gõ (hoặc tô đoạn bôi đen)'],['B','Đánh dấu phần nội dung'],['Alt + B','Mở / đóng bảng Đánh dấu & Mục lục'],['Alt + M','Đánh dấu nhanh vị trí đang xem / đối tượng đang chọn'],['Alt + [ / ]','Nhảy tới đánh dấu trước / sau'],['L','Đoạn thẳng'],['A','Mũi tên'],['R','Hình chữ nhật'],['O','Hình elip'],['I','Tam giác'],['X','Hệ trục'],['F','Công thức LaTeX'],['Ctrl + S','Lưu bài ra file'],['Shift + kéo góc','Đổi cỡ chữ (mặc định kéo góc đổi độ rộng công thức)'],['Kéo cạnh phải chữ / công thức','Chỉnh chiều rộng tự xuống dòng (nhấp đúp cạnh phải khi gõ để hết lề)'],['Ctrl + B / Ctrl + I (khi gõ chữ)','Bật / tắt chữ đậm, chữ nghiêng'],['Ctrl + O','Mở file bài đã lưu'],['Ctrl + Z','Hoàn tác'],['Ctrl + Shift + Z','Làm lại'],['Ctrl + D','Nhân đôi'],['Delete','Xóa đối tượng đang chọn'],['+ / −','Phóng to, thu nhỏ'],['Giữ Shift','Vẽ thẳng 45°, hình đều, hoặc chọn thêm đối tượng'],['Ctrl + Enter','Chèn văn bản hoặc công thức'],['[ và ]','Giảm, tăng độ dày nét'],['1 đến 6','Chọn màu nhanh'],['0','Vừa chiều rộng màn hình'],['C','Đường tròn tâm và bán kính'],['N','Điểm có nhãn A, B, C'],['Ctrl + V','Dán ảnh, văn bản hoặc đối tượng vào trang'],['Kéo khung trống','Chọn nhiều đối tượng (công cụ Chọn)'],['Nhấp đúp','Sửa công thức, chữ, nhãn điểm'],['Esc','Đóng bảng, hộp thoại, bỏ chọn'],['M','Đo độ dài'],['K','Đo góc'],['Ctrl + C, X, V','Sao chép, cắt, dán đối tượng'],['Ctrl + A','Chọn tất cả trên trang'],['Ctrl + K','Tìm lệnh, công cụ, công thức, đánh dấu'],['\\alpha, ->, x^2 (khi gõ chữ)','Tự đổi thành α, →, x²'],['$...$','Văn bản bao bằng $ thành công thức'],['1. rồi Enter','Tự tiếp danh sách đánh số hoặc gạch đầu dòng'],['D','Mở bảng đồ thị'],['Q','Mở máy tính và giải phương trình'],['Tab (khi gõ LaTeX)','Nhảy tới cặp ngoặc {} kế tiếp'],['Phím mũi tên','Dịch đối tượng đang chọn (Shift: 10 px)']];
   modal('Phím tắt','<div class="keys">'+rows.map(r=>`<span><kbd>${r[0]}</kbd></span><span>${r[1]}</span>`).join('')+'</div>');
 }
 function updCursor(){
@@ -3069,7 +3394,20 @@ function exportTex(){
     const geo=[];let skipped=0;
     for(const o of order){
       const cn=colName(o.c),dash=o.d?',dashed':'',fill=o.f?','+'fill='+cn+'!15':'',lw='line width='+f2((o.w||2)*.5)+'pt';
-      if(o.t==='x'){let tx=String(o.text).split('\n').map(texEsc).join(' \\\\\n');if(o.italic)tx='\\textit{'+tx+'}';if(o.bold)tx='\\textbf{'+tx+'}';if(o.align==='center')body+='\n\\begin{center}\n'+tx+'\n\\end{center}\n';else if(o.align==='right')body+='\n\\begin{flushright}\n'+tx+'\n\\end{flushright}\n';else body+='\n\\noindent '+tx+'\n';}
+      if(o.t==='x'){
+        let tx='';
+        if(o.runs&&o.runs.length){
+          let pos=0;
+          tx=String(o.text).split('\n').map(ln=>{
+            const s=pos,e=s+ln.length;pos=e+1;
+            if(!ln)return'';
+            return sliceRunsForRange(o.text,o.runs,s,e,o.c).map(sg=>'\\textcolor{'+colName(sg.c)+'}{'+texEsc(sg.text)+'}').join('');
+          }).join(' \\\\\n');
+        }else{
+          tx=String(o.text).split('\n').map(texEsc).join(' \\\\\n');
+        }
+        if(o.italic)tx='\\textit{'+tx+'}';if(o.bold)tx='\\textbf{'+tx+'}';if(o.align==='center')body+='\n\\begin{center}\n'+tx+'\n\\end{center}\n';else if(o.align==='right')body+='\n\\begin{flushright}\n'+tx+'\n\\end{flushright}\n';else body+='\n\\noindent '+tx+'\n';
+      }
       else if(o.t==='f'){let L=o.latex;if(/\\\\/.test(L)&&!/\\begin\{/.test(L))L='\\begin{gathered}'+L+'\\end{gathered}';body+='\n\\['+L+'\\]\n';}
       else if(o.t==='g'){
         const P=o.par||{a:1,b:0,c:0},ex=[];
@@ -3106,6 +3444,7 @@ function cmds(){
   [['Hoàn tác',undo,'Ctrl+Z'],['Làm lại',redo,'Ctrl+Shift+Z'],['Phóng to',()=>setZoom(S.z+.1),'+'],['Thu nhỏ',()=>setZoom(S.z-.1),'-'],['Vừa chiều rộng màn hình',fitW,'0'],
    ['Thêm trang mới',addPage],['Nhân đôi trang',dupPage],['Xóa nội dung trang',clrPage],['Chọn tất cả trên trang',selectAll,'Ctrl+A'],
    ['Mở bảng Công thức',()=>openPanel('f'),'F'],['Mở bảng Đồ thị',()=>openPanel('g'),'D'],['Mở Máy tính và giải phương trình',()=>openPanel('c'),'Q'],['Mở Hình mẫu',()=>openPanel('k')],['Mở Trang và giấy',()=>openPanel('p')],
+   ['Đổi qua lại 2 màu chữ',()=>{if(!TE&&S.tool!=='text')setTool('text');swapTEPair();},'Alt+C'],
    ['Mở bảng Đánh dấu & Mục lục',()=>openPanel('b'),'Alt+B'],['Đánh dấu vị trí đang xem',markCurrentSpot,'Alt+M'],['Nhảy tới đánh dấu trước',()=>stepMark(-1),'Alt+['],['Nhảy tới đánh dấu sau',()=>stepMark(1),'Alt+]'],
    ['Lưu file bài',saveFile,'Ctrl+S'],['Lưu thành file mới',saveAs],['Mở file bài đã lưu',openFile,'Ctrl+O'],['Tải tất cả trang (PDF)',exportPdf],['Xuất trang thành ảnh',exportPage],['Xuất mã LaTeX (.tex)',exportTex],['Sao lưu, khôi phục',backup],['Phím tắt',keys],['Mở Thư viện bài',openLib],['Tạo bài mới',newDoc],['Xóa bài hiện tại',askDeleteCurrentDoc],
    ['Giao diện sáng',()=>{S.theme='light';applyTheme();saveSettings();}],['Giao diện tối',()=>{S.theme='dark';applyTheme();saveSettings();}],['Giao diện tự động',()=>{S.theme='system';applyTheme();saveSettings();}]
@@ -3169,6 +3508,7 @@ function parseDoc(text){
       let id=rawOid;if(!id||seen.has(id))id=uid();seen.add(id);c.id=id;
       if(rawOid&&!om.has(rawOid))om.set(rawOid,id);
       if(c.t==='g')c.fns=c.fns.map(String).slice(0,5);
+      if(c.t==='x'){if(c.runs){const nr=normalizeRuns(c.text,c.runs,c.c);c.c=nr.c;if(nr.runs)c.runs=nr.runs;else delete c.runs;}}
       objs.push(c);
     }
     return{id:pid,bg:bgs.includes(p&&p.bg)?p.bg:'oly',objs};
@@ -3921,6 +4261,8 @@ function onKey(e){
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='o'){e.preventDefault();openFile();return;}
   if(e.altKey&&!e.ctrlKey&&!e.metaKey){
     const ak=e.key.toLowerCase();
+    if(ak==='c'&&(S.tool==='text'||(TE&&!TE.pt))){e.preventDefault();swapTEPair();return;}
+    if(/^[1-6]$/.test(e.key)&&(S.tool==='text'||(TE&&!TE.pt))){e.preventDefault();applyTEColor(COLORS[+e.key-1]);return;}
     if(ak==='b'){e.preventDefault();toggleBmPanel();return;}
     if(ak==='m'){e.preventDefault();markCurrentSpot();return;}
     if(e.key==='['){e.preventDefault();stepMark(-1);return;}
